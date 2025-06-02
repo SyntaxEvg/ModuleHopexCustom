@@ -1,0 +1,28 @@
+﻿{
+  "ModuleType": "AddOn",
+  "Version": "8.0.0\u002B15",
+  "Id": "hopex.NNCallMacro.api",
+  "Name": "HOPEX REST API",
+  "Description": "A list of REST services (graphql, attachment, dataset, diagram)",
+  "PathPrefix": "hopexgraphql",
+  "EnabledOnSettingsMode": false,
+  "ShowInPortal": false,
+  "IgnoreSynchronization": false,
+  "Author": "MEGA International",
+  "ServerVersionRange": "[15.1.0,)",
+  "dependencies": [
+    {
+      "Id": "hopex.graphql",
+      "Optional": false
+    }
+  ],
+  "Kind": "Site",
+  "Requisites": [
+    {
+      "Kind": "None",
+      "Value": "8.0",
+      "For": "All"
+    }
+  ],
+  "RequireLicenseAcceptance": false
+}

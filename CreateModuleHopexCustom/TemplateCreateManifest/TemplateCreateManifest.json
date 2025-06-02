@@ -1,0 +1,28 @@
+﻿{
+  "ModuleType": "AddOn",
+  "Version": "8.0.0\u002B17",
+  "Id": "hopex.NNCallMacro.api",
+  "Name": "HOPEX NN API",
+  "Description": "HOPEX NN API",
+  "PathPrefix": "nncall",
+  "EnabledOnSettingsMode": false,
+  "ShowInPortal": false,
+  "IgnoreSynchronization": false,
+  "Author": "NN International",
+  "ServerVersionRange": "[15.1.0,)",
+  "dependencies": [
+    {
+      "Id": "hopex.graphql",
+      "Optional": false
+    }
+  ],
+  "Kind": "Site",
+  "Requisites": [
+    {
+      "Kind": "None",
+      "Value": "8.0",
+      "For": "All"
+    }
+  ],
+  "RequireLicenseAcceptance": false
+}

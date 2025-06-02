@@ -1,0 +1,287 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Attributes\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.HeaderPropagation" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+    <PackageReference Include="OpenTracing" Version="0.12.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Azure.Core">
+      <HintPath>..\externalPack\Azure.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Azure.Identity">
+      <HintPath>..\externalPack\Azure.Identity.dll</HintPath>
+    </Reference>
+    <Reference Include="Ben.Demystifier">
+      <HintPath>..\externalPack\Ben.Demystifier.dll</HintPath>
+    </Reference>
+    <Reference Include="BirdMessenger">
+      <HintPath>..\externalPack\BirdMessenger.dll</HintPath>
+    </Reference>
+    <Reference Include="CSharpFunctionalExtensions">
+      <HintPath>..\externalPack\CSharpFunctionalExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="CSharpFunctionalExtensions.FluentAssertions">
+      <HintPath>..\externalPack\CSharpFunctionalExtensions.FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions">
+      <HintPath>..\externalPack\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="HAS.Desktop">
+      <HintPath>..\externalPack\HAS.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="HAS.Extensions.Commandline">
+      <HintPath>..\externalPack\HAS.Extensions.Commandline.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HAS.Extensions.Forms">
+      <HintPath>..\externalPack\HAS.Extensions.Forms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HAS.Extensions.Package">
+      <HintPath>..\externalPack\HAS.Extensions.Package.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HAS.Modules.WebService.API">
+      <HintPath>..\externalPack\HAS.Modules.WebService.API.dll</HintPath>
+    </Reference>
+    <Reference Include="HAS.Server.Commons">
+      <HintPath>..\externalPack\HAS.Server.Commons.dll</HintPath>
+    </Reference>
+    <Reference Include="HAS.Server.Internals2">
+      <HintPath>..\externalPack\HAS.Server.Internals2.dll</HintPath>
+    </Reference>
+    <Reference Include="HAS.Server.SiteModule">
+      <HintPath>..\externalPack\HAS.Server.SiteModule.dll</HintPath>
+    </Reference>
+    <Reference Include="HAS.Tool">
+      <HintPath>..\externalPack\HAS.Tool.dll</HintPath>
+    </Reference>
+    <Reference Include="Hopex.ApplicationServer.WebServices">
+      <HintPath>..\externalPack\Hopex.ApplicationServer.WebServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Hopex.Common">
+      <HintPath>..\externalPack\Hopex.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="IdentityModel">
+      <HintPath>..\externalPack\IdentityModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Jaeger.Communication.Thrift">
+      <HintPath>..\externalPack\Jaeger.Communication.Thrift.dll</HintPath>
+    </Reference>
+    <Reference Include="Jaeger.Core">
+      <HintPath>..\externalPack\Jaeger.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Jaeger.Senders.Thrift">
+      <HintPath>..\externalPack\Jaeger.Senders.Thrift.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authentication.JwtBearer">
+      <HintPath>..\externalPack\Microsoft.AspNetCore.Authentication.JwtBearer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect">
+      <HintPath>..\externalPack\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore">
+      <HintPath>..\externalPack\Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.HeaderPropagation">
+      <HintPath>..\externalPack\Microsoft.AspNetCore.HeaderPropagation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.JsonPatch">
+      <HintPath>..\externalPack\Microsoft.AspNetCore.JsonPatch.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson">
+      <HintPath>..\externalPack\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Mvc.Razor.Extensions">
+      <HintPath>..\externalPack\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation">
+      <HintPath>..\externalPack\Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Razor.Language">
+      <HintPath>..\externalPack\Microsoft.AspNetCore.Razor.Language.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
+      <HintPath>..\externalPack\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis">
+      <HintPath>..\externalPack\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp">
+      <HintPath>..\externalPack\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Razor">
+      <HintPath>..\externalPack\Microsoft.CodeAnalysis.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.SqlClient">
+      <HintPath>..\externalPack\Microsoft.Data.SqlClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Sqlite">
+      <HintPath>..\externalPack\Microsoft.Data.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore">
+      <HintPath>..\externalPack\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Abstractions">
+      <HintPath>..\externalPack\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Relational">
+      <HintPath>..\externalPack\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Sqlite">
+      <HintPath>..\externalPack\Microsoft.EntityFrameworkCore.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.SqlServer">
+      <HintPath>..\externalPack\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.SqlServer">
+      <HintPath>..\externalPack\Microsoft.Extensions.Caching.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyModel">
+      <HintPath>..\externalPack\Microsoft.Extensions.DependencyModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Identity.Client">
+      <HintPath>..\externalPack\Microsoft.Identity.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Identity.Client.Extensions.Msal">
+      <HintPath>..\externalPack\Microsoft.Identity.Client.Extensions.Msal.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Abstractions">
+      <HintPath>..\externalPack\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens">
+      <HintPath>..\externalPack\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging">
+      <HintPath>..\externalPack\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocols">
+      <HintPath>..\externalPack\Microsoft.IdentityModel.Protocols.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect">
+      <HintPath>..\externalPack\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens">
+      <HintPath>..\externalPack\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Server">
+      <HintPath>..\externalPack\Microsoft.SqlServer.Server.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\externalPack\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Bson">
+      <HintPath>..\externalPack\Newtonsoft.Json.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.Versioning">
+      <HintPath>..\externalPack\NuGet.Versioning.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTracing">
+      <HintPath>..\externalPack\OpenTracing.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog">
+      <HintPath>..\externalPack\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.AspNetCore">
+      <HintPath>..\externalPack\Serilog.AspNetCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.AssemblyName">
+      <HintPath>..\externalPack\Serilog.Enrichers.AssemblyName.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Extensions.Hosting">
+      <HintPath>..\externalPack\Serilog.Extensions.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Extensions.Logging">
+      <HintPath>..\externalPack\Serilog.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Formatting.Compact">
+      <HintPath>..\externalPack\Serilog.Formatting.Compact.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Settings.Configuration">
+      <HintPath>..\externalPack\Serilog.Settings.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Async">
+      <HintPath>..\externalPack\Serilog.Sinks.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Console">
+      <HintPath>..\externalPack\Serilog.Sinks.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Debug">
+      <HintPath>..\externalPack\Serilog.Sinks.Debug.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File">
+      <HintPath>..\externalPack\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Seq">
+      <HintPath>..\externalPack\Serilog.Sinks.Seq.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.batteries_v2">
+      <HintPath>..\externalPack\SQLitePCLRaw.batteries_v2.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.core">
+      <HintPath>..\externalPack\SQLitePCLRaw.core.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.provider.e_sqlite3">
+      <HintPath>..\externalPack\SQLitePCLRaw.provider.e_sqlite3.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ClientModel">
+      <HintPath>..\externalPack\System.ClientModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration.ConfigurationManager">
+      <HintPath>..\externalPack\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IdentityModel.Tokens.Jwt">
+      <HintPath>..\externalPack\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Abstractions">
+      <HintPath>..\externalPack\System.IO.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory.Data">
+      <HintPath>..\externalPack\System.Memory.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting">
+      <HintPath>..\externalPack\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WinHttpHandler">
+      <HintPath>..\externalPack\System.Net.Http.WinHttpHandler.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive">
+      <HintPath>..\externalPack\System.Reactive.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Caching">
+      <HintPath>..\externalPack\System.Runtime.Caching.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.ProtectedData">
+      <HintPath>..\externalPack\System.Security.Cryptography.ProtectedData.dll</HintPath>
+    </Reference>
+    <Reference Include="TestableIO.System.IO.Abstractions">
+      <HintPath>..\externalPack\TestableIO.System.IO.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="TestableIO.System.IO.Abstractions.Wrappers">
+      <HintPath>..\externalPack\TestableIO.System.IO.Abstractions.Wrappers.dll</HintPath>
+    </Reference>
+    <Reference Include="Thrift">
+      <HintPath>..\externalPack\Thrift.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
