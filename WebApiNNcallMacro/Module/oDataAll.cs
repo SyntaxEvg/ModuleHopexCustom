@@ -1,4 +1,6 @@
-﻿public class oDataAll
+﻿namespace Mega.Api.Models
+{
+    public class oDataAll
 {
     public string MacrosID { get; set; }
     public string Class { get; set; }
@@ -17,4 +19,5 @@
         get;
         set;
     }
+}
 }

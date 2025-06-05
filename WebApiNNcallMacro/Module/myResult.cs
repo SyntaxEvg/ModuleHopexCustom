@@ -1,20 +1,24 @@
-﻿public class myResult
+﻿
+namespace Mega.Api.Models
 {
-    public string Result { get; set; }
-
-    public dynamic Info
+    public class myResult
     {
-        get;
-        set;
-    }
+        public string Result { get; set; }
 
-    public dynamic Data
-    {
-        get;
-        set;
-    }
+        public dynamic Info
+        {
+            get;
+            set;
+        }
 
-    public myResult()
-    {
+        public dynamic Data
+        {
+            get;
+            set;
+        }
+
+        public myResult()
+        {
+        }
     }
 }
