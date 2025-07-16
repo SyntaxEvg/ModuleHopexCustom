@@ -285,3 +285,51 @@ namespace Hopex.WebService.Controller
 //        File.AppendAllText(path, "\n]");
 //    }
 //}
+static void EnsureArrayEnd(string path)
+{
+    if (!File.Exists(path)) return;
+
+    // Открываем файл для чтения и записи
+    using var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+    using var reader = new StreamReader(stream);
+
+    long lastCommaPos = -1;
+    long lastLineStart = 0;
+    string? lastLine = null;
+
+    // Читаем построчно, запоминаем позицию начала последней строки
+    while (!reader.EndOfStream)
+    {
+        lastLineStart = stream.Position;
+        lastLine = reader.ReadLine();
+    }
+
+    if (lastLine == null) return;
+
+    // Проверяем, есть ли запятая в конце
+    if (lastLine.TrimEnd().EndsWith(","))
+    {
+        // Удаляем запятую: перемещаемся к началу последней строки
+        stream.Seek(lastLineStart, SeekOrigin.Begin);
+
+        // Читаем строку как байты
+        var encoding = reader.CurrentEncoding;
+        byte[] buffer = new byte[encoding.GetByteCount(lastLine)];
+        stream.Read(buffer, 0, buffer.Length);
+
+        // Преобразуем в строку, удаляем запятую
+        string lineWithoutComma = lastLine.TrimEnd().TrimEnd(',');
+
+        // Перемещаемся назад и перезаписываем строку
+        stream.Seek(lastLineStart, SeekOrigin.Begin);
+        byte[] newBytes = encoding.GetBytes(lineWithoutComma + "\n");
+        stream.Write(newBytes, 0, newBytes.Length);
+
+        // Обрезаем файл, если новая строка короче
+        stream.SetLength(stream.Position);
+    }
+
+    // Добавляем закрывающую скобку
+    using var writer = new StreamWriter(stream, leaveOpen: true);
+    writer.WriteLine("]");
+}
