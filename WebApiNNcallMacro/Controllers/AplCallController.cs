@@ -25,9 +25,10 @@ namespace Hopex.WebService.Controller
             this._hopex = hopex;
             this._logger = logger;
             _headerCollector = headerCollector;
-            un = base.User.Identity.Name;
+            //un = base.User.Identity.Name;
+            //un = HttpContext.User.Identity?.Name;
             //ip = base.Request.Properties["MS_HttpContext"]).Request.UserHostAddress;
-            ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            //ip = HttpContext.Connection.RemoteIpAddress?.ToString();
         }
 
 
@@ -206,3 +207,81 @@ namespace Hopex.WebService.Controller
         }
     }
 }
+//using System;
+//using System.Collections.Generic;
+//using System.IO;
+//using System.Text.Json;
+
+//class Program
+//{
+//    static string filePath = "data.json";
+
+//    static void Main()
+//    {
+//        // Пример данных
+//        var dict = new Dictionary<string, string>
+//        {
+//            { "key1", "value1" },
+//            { "key2", "value2" }
+//        };
+
+//        // 1. Начало файла
+//        EnsureArrayStart(filePath);
+
+//        // 2. Добавление объектов
+//        foreach (var kvp in dict)
+//        {
+//            AppendJsonObject(filePath, kvp);
+//        }
+
+//        // 3. Завершение файла
+//        EnsureArrayEnd(filePath);
+//    }
+
+//    // ? Метод: Добавить [ если файл пустой
+//    static void EnsureArrayStart(string path)
+//    {
+//        if (!File.Exists(path) || new FileInfo(path).Length == 0)
+//        {
+//            File.AppendAllText(path, "[\n");
+//        }
+//    }
+
+//    // ? Метод: Добавить JSON-объект без [ ] и с запятой
+//    static void AppendJsonObject(string path, KeyValuePair<string, string> kvp)
+//    {
+//        var obj = new Dictionary<string, string> { { kvp.Key, kvp.Value } };
+//        string json = JsonSerializer.Serialize(obj);
+
+//        // Удаляем внешние скобки { "key": "value" } => "key": "value"
+//        ReadOnlySpan<char> span = json.AsSpan(1, json.Length - 2);
+//        string trimmed = span.ToString();
+
+//        // Добавляем как { "key": "value" },
+//        File.AppendAllText(path, "  {" + trimmed + "},\n");
+//    }
+
+//    // ? Метод: Добавить ] в конце, заменив последнюю запятую
+//    static void EnsureArrayEnd(string path)
+//    {
+//        if (!File.Exists(path)) return;
+
+//        var lines = File.ReadAllLines(path);
+
+//        if (lines.Length == 0) return;
+
+//        // Удаляем последнюю запятую у последнего объекта
+//        for (int i = lines.Length - 1; i >= 0; i--)
+//        {
+//            if (lines[i].TrimEnd().EndsWith(","))
+//            {
+//                lines[i] = lines[i].TrimEnd().TrimEnd(',');
+//                break;
+//            }
+//        }
+
+//        // Добавляем закрывающую скобку
+//        File.WriteAllLines(path, lines);
+//        File.AppendAllText(path, "\n]");
+//    }
+//}
