@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
 using System.Reflection.PortableExecutable;
+using System.Text;
+using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Hopex.WebService.Controller
@@ -332,4 +334,60 @@ static void EnsureArrayEnd(string path)
     // Добавляем закрывающую скобку
     using var writer = new StreamWriter(stream, leaveOpen: true);
     writer.WriteLine("]");
+}
+static Dictionary<string, string> ReadJsonArrayToDictionary(string path)
+{
+    var dict = new Dictionary<string, string>();
+
+    using FileStream fs = File.OpenRead(path);
+    using var reader = new StreamReader(fs, Encoding.UTF8);
+    string json = reader.ReadToEnd();
+
+    var jsonBytes = Encoding.UTF8.GetBytes(json);
+    var jsonSpan = new ReadOnlySpan<byte>(jsonBytes);
+
+    var jsonReader = new Utf8JsonReader(jsonSpan, isFinalBlock: true, state: default);
+
+    // Ожидаем начало массива
+    if (!jsonReader.Read() || jsonReader.TokenType != JsonTokenType.StartArray)
+        throw new InvalidDataException("Ожидался JSON-массив");
+
+    while (jsonReader.Read())
+    {
+        if (jsonReader.TokenType == JsonTokenType.EndArray)
+            break;
+
+        if (jsonReader.TokenType == JsonTokenType.StartObject)
+        {
+            string? key = null;
+            string? value = null;
+
+            while (jsonReader.Read() && jsonReader.TokenType != JsonTokenType.EndObject)
+            {
+                if (jsonReader.TokenType == JsonTokenType.PropertyName)
+                {
+                    string propertyName = jsonReader.GetString()!;
+                    jsonReader.Read(); // Переход к значению
+
+                    if (key == null)
+                    {
+                        key = propertyName;
+                        value = jsonReader.GetString();
+                    }
+                    else
+                    {
+                        // Если объект содержит больше одного ключа — можно расширить
+                        throw new InvalidDataException("Ожидался объект с одним ключом");
+                    }
+                }
+            }
+
+            if (key != null && value != null)
+            {
+                dict[key] = value;
+            }
+        }
+    }
+
+    return dict;
 }
