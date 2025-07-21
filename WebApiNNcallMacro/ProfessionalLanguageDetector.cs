@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebApiNNcallMacro
 {
@@ -358,3 +359,4 @@ private bool IsLikelyPortugueseWord(string word)
         ", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase)
         && Regex.IsMatch(word, @"[ãõç]", RegexOptions.IgnoreCase); // Должны быть специфические символы
 }
+ReadOnlySpan<char> last16CharsAlt = text.AsSpan(Math.Max(0, text.Length - 16));
