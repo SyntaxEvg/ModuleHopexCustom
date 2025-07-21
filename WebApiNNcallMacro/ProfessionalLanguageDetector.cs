@@ -298,3 +298,63 @@ private bool IsLikelyFrenchWord(string word)
     if (string.IsNullOrWhiteSpace(word)) return false;
     return FrenchWordRegex.IsMatch(word);
 }
+.......
+    private bool IsLikelyGermanWord(string word)
+{
+    if (string.IsNullOrWhiteSpace(word) || word.Length < 4)
+        return false;
+
+    // Немецкие слова обычно содержат:
+    // - умлауты (ä, ö, ü) и ß
+    // - характерные сочетания (sch, ch, ck, tz и др.)
+    // - суффиксы (ung, heit, keit, chen)
+    return Regex.IsMatch(word, @"
+        ^                       # Начало слова
+        (?:[a-zäöüß]+           # Основная часть слова
+        (?:sch|ch|ck|tz|pf|sp|st|ei|ie)  # Немецкие сочетания
+        |[äöüß]                 # Или содержит умлауты/эсцет
+        )+                      # Повторяем
+        (?:ung|heit|keit|chen|lein|nis)\b # Суффиксы
+        $                       # Конец слова
+        ", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
+}
+
+private bool IsLikelySpanishWord(string word)
+{
+    if (string.IsNullOrWhiteSpace(word) || word.Length < 4)
+        return false;
+
+    // Испанские слова обычно:
+    // - оканчиваются на характерные суффиксы
+    // - содержат ударения (á, é, í, ó, ú) или ñ
+    // - не содержат редкие для испанского сочетания букв
+    return Regex.IsMatch(word, @"
+        ^                       # Начало слова
+        (?:[a-záéíóúñ]+         # Основная часть слова
+        (?:ll|rr|qu|gu|gü)      # Характерные сочетания
+        )?                      # Опционально
+        (?:ción|dad|miento|mente|ado|ada|ando|oso|osa)\b # Суффиксы
+        $                       # Конец слова
+        ", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase)
+        && !Regex.IsMatch(word, @"[kwxy]", RegexOptions.IgnoreCase); // Редкие буквы
+}
+
+private bool IsLikelyPortugueseWord(string word)
+{
+    if (string.IsNullOrWhiteSpace(word) || word.Length < 4)
+        return false;
+
+    // Португальские слова обычно:
+    // - содержат ç, ã, õ и другие специфические символы
+    // - имеют характерные окончания
+    // - содержат носовые гласные (ã, õ)
+    return Regex.IsMatch(word, @"
+        ^                       # Начало слова
+        (?:[a-záàâãéêíóôõúç]+   # Основная часть слова
+        (?:lh|nh|rr|ss|qu|gu)   # Характерные сочетания
+        )?                      # Опционально
+        (?:ção|mento|dade|agem|inho|inha)\b # Суффиксы
+        $                       # Конец слова
+        ", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase)
+        && Regex.IsMatch(word, @"[ãõç]", RegexOptions.IgnoreCase); // Должны быть специфические символы
+}
