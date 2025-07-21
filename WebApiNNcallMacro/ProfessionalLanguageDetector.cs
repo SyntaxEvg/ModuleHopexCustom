@@ -5,6 +5,69 @@
         private const string LanguageProfilePath = "Core14.profile.xml";
         private static readonly RankedLanguageIdentifier Identifier;
 
+
+        /// <summary>
+        /// Проверяет, является ли текст "мусорным" (кракозябрами).
+        /// </summary>
+        public static bool IsLikelyGarbage(string text, double minLetterRatio = 0.7)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return false;
+            int letterOrDigitCount = text.Count(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c));
+            return (double)letterOrDigitCount / text.Length < minLetterRatio;
+        }
+
+        /// <summary>
+        /// Определяет язык текста с проверкой на мусор и низкой уверенностью.
+        /// </summary>
+        /// <param name="text">Текст для анализа.</param>
+        /// <param name="confidenceThreshold">Минимальный порог уверенности (от 0.0 до 1.0).</param>
+        /// <returns>Название языка или сообщение об ошибке.</returns>
+        public static string DetectLanguage(string text, double confidenceThreshold = 0.3)
+        {
+            // ШАГ 1: Предварительная фильтрация мусора
+            if (IsLikelyGarbage(text))
+            {
+                return "Мусорный текст (кракозябры)";
+            }
+
+            if (Identifier == null || string.IsNullOrWhiteSpace(text))
+            {
+                return "Не определен";
+            }
+
+            var languages = Identifier.Identify(text);
+            var mostLikelyLanguage = languages.FirstOrDefault();
+
+            if (mostLikelyLanguage == null)
+            {
+                return "Не определен";
+            }
+
+            var langCode = mostLikelyLanguage.Item1.Iso639_3;
+            var confidence = mostLikelyLanguage.Item2;
+
+            // ШАГ 2: Проверка уверенности библиотеки
+            if (confidence < confidenceThreshold)
+            {
+                return $"Неуверенное определение (похоже на {langCode}, но оценка {confidence:F2} слишком низкая)";
+            }
+
+            if (LanguageNames.TryGetValue(langCode, out var name))
+            {
+                return name;
+            }
+
+            return $"Неизвестный код языка: {langCode}";
+        }
+
+
+
+
+
+
+
+
+
         // НАШ НОВЫЙ СЛОВАРЬ С НАЗВАНИЯМИ ЯЗЫКОВ
         private static readonly Dictionary<string, string> LanguageNames = new()
     {
