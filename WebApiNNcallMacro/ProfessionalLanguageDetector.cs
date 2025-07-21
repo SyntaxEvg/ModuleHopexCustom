@@ -1,9 +1,110 @@
-﻿namespace WebApiNNcallMacro
+﻿using System.Text.RegularExpressions;
+
+namespace WebApiNNcallMacro
 {
     public class ProfessionalLanguageDetector
     {
         private const string LanguageProfilePath = "Core14.profile.xml";
         private static readonly RankedLanguageIdentifier Identifier;
+
+        //bool isFrench = detector.IsLikelyWordOfLanguage("bibliothèque", "fr"); // true
+        //bool isJapanese = detector.IsLikelyWordOfLanguage("こんにちは", "ja"); // true
+        //bool isGibberish = detector.IsLikelyWordOfLanguage("asdf1234", "de"); // false
+        public bool IsLikelyWordOfLanguage(string word, string langCode)
+        {
+            if (string.IsNullOrWhiteSpace(word) || word.Length < 3)
+                return false;
+
+            if (IsGibberish(word))
+                return false;
+
+            // Сначала проверяем языковые специфичные паттерны
+            var likelyByPattern = langCode switch
+            {
+                "fr" => IsLikelyFrenchWord(word),
+                "de" => IsLikelyGermanWord(word),
+                "es" => IsLikelySpanishWord(word),
+                "pt" => IsLikelyPortugueseWord(word),
+                "ja" => IsLikelyJapaneseWord(word),
+                _ => false
+            };
+
+            if (!likelyByPattern)
+                return false;
+
+            // Затем проверяем через NTextCat для подтверждения
+            var detectedLanguage = DetectLanguage(word);
+            return detectedLanguage == langCode;
+        }
+
+        private string DetectLanguage(string text)
+        {
+            var languages = _identifier.Identify(text);
+            var bestMatch = languages.FirstOrDefault();
+
+            return bestMatch?.Item2 >= ConfidenceThreshold ? bestMatch.Item1.Iso639_3 : "unknown";
+        }
+
+        private bool IsGibberish(string text)
+        {
+            // Уже реализованные проверки из предыдущего кода
+            if (text.Length < 3) return true;
+
+            var uniqueChars = new HashSet<char>(text).Count;
+            if (uniqueChars > text.Length * 0.7) return true;
+
+            var nonLetters = text.Count(c => !char.IsLetter(c));
+            if (nonLetters > text.Length * 0.3) return true;
+
+            return HasRepeatingPatterns(text);
+        }
+
+        private bool HasRepeatingPatterns(string text)
+        {
+            if (text.Length < 6) return false;
+
+            for (int i = 0; i < text.Length - 6; i++)
+            {
+                var substring = text.Substring(i, 3);
+                if (text.IndexOf(substring, i + 3) != -1)
+                    return true;
+            }
+            return false;
+        }
+
+        // Языковые специфичные проверки
+        private bool IsLikelyFrenchWord(string word)
+        {
+            // Французские окончания и диакритические знаки
+            return Regex.IsMatch(word, @"(?i)\b\w+(?:aison|ment|tion|ette|ique|eau|eur|[àâäéèêëîïôöùûüÿç])\b");
+        }
+
+        private bool IsLikelyGermanWord(string word)
+        {
+            // Немецкие умлауты и длинные составные слова
+            return Regex.IsMatch(word, @"(?i)\b\w*(?:sch|ch|ei|ie|ung|heit|keit|[äöüß])\w*\b") &&
+                   word.Length > 4; // Немецкие слова часто длинные
+        }
+
+        private bool IsLikelySpanishWord(string word)
+        {
+            // Испанские окончания и ñ
+            return Regex.IsMatch(word, @"(?i)\b\w*(?:ción|dad|mente|ado|ada|ando|[áéíóúñ])\b");
+        }
+
+        private bool IsLikelyPortugueseWord(string word)
+        {
+            // Португальские окончания и ç
+            return Regex.IsMatch(word, @"(?i)\b\w*(?:ção|mento|dade|nh|[áàâãéêíóôõúç])\b");
+        }
+
+        private bool IsLikelyJapaneseWord(string word)
+        {
+            // Проверка на наличие японских символов (хирагана, катакана, канжи)
+            return Regex.IsMatch(word, @"[\p{IsHiragana}\p{IsKatakana}\p{IsCJKUnifiedIdeographs}]");
+        }
+
+
 
 
         /// <summary>
