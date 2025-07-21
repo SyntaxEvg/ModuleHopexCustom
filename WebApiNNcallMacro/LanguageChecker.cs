@@ -133,3 +133,10 @@ namespace TestDetect
         }
     }
 }
+string[] endings = new[] {
+    "ée", "eau", "ette", "oir", "age", "ment", "ique", "eur", "ille", "tion",
+    "ance", "ence", "isme", "able", "ible", "aire", "eux", "euse", "if", "ive",
+    "ment", "oir", "al", "el", "et", "ade", "ure", "in", "ine", "ien", "ienne",
+    "eux", "trice", "sion", "tude", "oire", "ier", "ière", "ien", "ienne", "ique",
+    "eux", "ance", "ence", "ment", "tion", "sion", "ure", "ade", "ette", "elle"
+};
