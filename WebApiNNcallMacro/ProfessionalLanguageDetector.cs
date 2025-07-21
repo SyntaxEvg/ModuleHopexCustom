@@ -548,3 +548,21 @@ https://github.com/hermitdave/FrequencyWords
 https://github.com/oprogramador/most-common-words-by-language
 
 https://github.com/aceimnorstuvwxz/top-words
+====================
+// Регулярное выражение для поиска 3+ подряд идущих кракозябр
+    private static readonly Regex KrackozjabraRegex = new Regex(
+        @"(?:[ÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŸ¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ]){3,}",
+        RegexOptions.Compiled
+    );
+
+    /// <summary>Проверяет, содержит ли строка последовательности из 3+ кракозябр</summary>
+    public static bool ContainsKrackozjabra(string text)
+    {
+        return KrackozjabraRegex.IsMatch(text);
+    }
+
+    /// <summary>Находит все последовательности из 3+ кракозябр</summary>
+    public static MatchCollection FindAllKrackozjabras(string text)
+    {
+        return KrackozjabraRegex.Matches(text);
+    }
