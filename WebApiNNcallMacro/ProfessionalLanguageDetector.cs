@@ -286,3 +286,15 @@ namespace WebApiNNcallMacro
         }
     }
 }
+private static readonly Regex FrenchWordRegex = new Regex(
+    @"(?:[àâäéèêëîïôöùûüÿçœæ])|" +               // французские спецсимволы
+    @"(?:\w*(?:tion|ment|age|isme|able|ique|oire|eur|euse|ette|iste)\b)|" + // суффиксы
+    @"(?:\b\w*[szx]e\b)|" +                      // окончания на -se, -ze, -xe
+    @"(?:^[re|dé|pré|mé|sous|sur]\w*)",          // префиксы
+    RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+private bool IsLikelyFrenchWord(string word)
+{
+    if (string.IsNullOrWhiteSpace(word)) return false;
+    return FrenchWordRegex.IsMatch(word);
+}
