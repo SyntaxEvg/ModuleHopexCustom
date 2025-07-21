@@ -359,21 +359,44 @@ private bool IsLikelySpanishWord(string word)
 
 private bool IsLikelyPortugueseWord(string word)
 {
-    if (string.IsNullOrWhiteSpace(word) || word.Length < 4)
+    if (string.IsNullOrWhiteSpace(word) || word.Length < 3)
         return false;
 
-    // Португальские слова обычно:
-    // - содержат ç, ã, õ и другие специфические символы
-    // - имеют характерные окончания
-    // - содержат носовые гласные (ã, õ)
-    return Regex.IsMatch(word, @"
-        ^                       # Начало слова
-        (?:[a-záàâãéêíóôõúç]+   # Основная часть слова
-        (?:lh|nh|rr|ss|qu|gu)   # Характерные сочетания
-        )?                      # Опционально
-        (?:ção|mento|dade|agem|inho|inha)\b # Суффиксы
-        $                       # Конец слова
-        ", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase)
-        && Regex.IsMatch(word, @"[ãõç]", RegexOptions.IgnoreCase); // Должны быть специфические символы
+    // 1. Проверка на диакритику (á, à, â, ã, é, ê, í, ó, ô, õ, ú, ç)
+    bool hasDiacritics = Regex.IsMatch(word, @"[áàâãéêíóôõúç]", RegexOptions.IgnoreCase);
+
+    // 2. Проверка на характерные португальские сочетания
+    bool hasPortugueseCombinations = Regex.IsMatch(word, @"lh|nh|rr|ss|gu|qu|ch", RegexOptions.IgnoreCase);
+
+    // 3. Проверка на суффиксы
+    bool hasSuffixes = Regex.IsMatch(word, @"
+        (ção|cões|dade|mente|inho|inha|ável|ível|ismo|ante|agem|ente|ista|izar|osos?|osas?|ados?|adas?|idos?|idas?)\b
+        ", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
+    // 4. Проверка на глагольные окончания
+    bool isVerbForm = Regex.IsMatch(word, @"
+        (ar|er|ir|or|amos|emos|imos|aram|eram|iram|ando|endo|indo|ondo)\b
+        ", RegexOptions.IgnoreCase);
+
+    // 5. Проверка на частые предлоги/артикли (короткие слова)
+    bool isShortPortugueseWord = word.Length <= 3 &&
+        Regex.IsMatch(word, @"^(o|a|os|as|em|de|por|que|com|não|sem|num|numa)$", RegexOptions.IgnoreCase);
+
+    // 6. Проверка на приставки
+    bool hasPrefixes = Regex.IsMatch(word, @"^(des|re|trans|super|auto|extra)", RegexOptions.IgnoreCase);
+
+    // 7. Исключение явно французских слов (например, -tion вместо -ção)
+    bool isFrenchWord = Regex.IsMatch(word, @"(tion|eau|aux|eux|ille|ienne)\b", RegexOptions.IgnoreCase);
+
+    // Если слово содержит французские паттерны, но нет португальских эквивалентов — отфильтровываем
+    if (isFrenchWord && !hasDiacritics && !hasPortugueseCombinations)
+        return false;
+
+    // Португальское слово, если:
+    // - Есть диакритика ИЛИ
+    // - Есть характерные сочетания ИЛИ
+    // - Есть суффиксы/глагольные формы ИЛИ
+    // - Это короткое служебное слово
+    return hasDiacritics || hasPortugueseCombinations || hasSuffixes || isVerbForm || isShortPortugueseWord || hasPrefixes;
 }
 ReadOnlySpan<char> last16CharsAlt = text.AsSpan(Math.Max(0, text.Length - 16));
