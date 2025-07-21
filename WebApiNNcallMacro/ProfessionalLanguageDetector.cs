@@ -47,7 +47,20 @@ namespace WebApiNNcallMacro
 
         private bool IsGibberish(string text)
         {
-            // Уже реализованные проверки из предыдущего кода
+            /// 1. Проверка на слишком много разных символов
+            var uniqueChars = new HashSet<char>(text).Count;
+            if (uniqueChars > text.Length * 0.5) // эмпирическое значение
+                return true;
+
+            // 2. Проверка на необычные комбинации символов
+            var nonLetters = text.Count(c => !char.IsLetter(c));
+            if (nonLetters > text.Length * 0.4) // слишком много не-букв
+                return true;
+
+            // 3. Проверка на повторяющиеся паттерны (например, "ыыыыы" или "asdfasdf")
+            if (HasRepeatingPatterns(text))
+                return true;
+
             if (text.Length < 3) return true;
 
             var uniqueChars = new HashSet<char>(text).Count;
