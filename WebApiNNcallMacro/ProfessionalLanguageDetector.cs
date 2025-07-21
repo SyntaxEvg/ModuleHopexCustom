@@ -4,6 +4,20 @@ namespace WebApiNNcallMacro
 {
     public class ProfessionalLanguageDetector
     {
+        private static readonly Regex FrenchWordRegex = new Regex(@"
+    (?:(?:[àâäéèêëîïôöùûüÿçœæ])|                # Любой французский спецсимвол
+    (?:tion|ment|age|isme|able|ique|oire|eur|euse|ette|iste)|  # Суффиксы
+    \b\w+[szx]e\b|                             # Окончания на -se, -ze, -xe
+    ^(?:re|dé|pré|mé|sous|sur)\w+              # Префиксы
+    ", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
+
+        private bool IsLikelyFrenchWord(string word)
+        {
+            return FrenchWordRegex.IsMatch(word);
+        }
+
+
+
         private const string LanguageProfilePath = "Core14.profile.xml";
         private static readonly RankedLanguageIdentifier Identifier;
 
