@@ -432,4 +432,57 @@ private bool IsLikelyPortugueseWord(string word)
     // - Это короткое служебное слово
     return hasDiacritics || hasPortugueseCombinations || hasSuffixes || isVerbForm || isShortPortugueseWord || hasPrefixes;
 }
-ReadOnlySpan<char> last16CharsAlt = text.AsSpan(Math.Max(0, text.Length - 16));
+private bool IsLikelyItalianWord(string word)
+{
+    if (string.IsNullOrWhiteSpace(word))
+        return false;
+
+    // Короткие итальянские слова (артикли, предлоги, местоимения)
+    if (word.Length <= 3)
+    {
+        return Regex.IsMatch(word,
+            @"^(il|lo|la|i|gli|le|un|uno|una|e|a|di|da|in|con|su|per|tra|fra|mi|ti|ci|vi|si)$",
+            RegexOptions.IgnoreCase);
+    }
+
+    // 1. Проверка на итальянскую диакритику (à, è, é, ì, ò, ù)
+    bool hasItalianDiacritics = Regex.IsMatch(word, @"[àèéìòù]", RegexOptions.IgnoreCase);
+
+    // 2. Характерные итальянские сочетания букв
+    bool hasItalianCombinations = Regex.IsMatch(word,
+        @"(gli|gn|sc[i|e|h]|ch|gh|ci|ce|gi|ge|zz|tt|cc|pp|bb|dd|ff|gg|ll|mm|nn|rr|ss|vv)",
+        RegexOptions.IgnoreCase);
+
+    // 3. Типичные итальянские суффиксы и окончания
+    bool hasItalianSuffixes = Regex.IsMatch(word, @"
+        (zione|tore|trice|mento|anza|essa|ino|ina|etto|etta|uccio|uccia|astro|astra|ismo|ista|abile|ibile|oso|osa|ale|are|ire)\b",
+        RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
+    // 4. Глагольные окончания (-are, -ere, -ire и их формы)
+    bool isItalianVerb = Regex.IsMatch(word, @"
+        (are|ere|ire|ando|endo|ato|ito|avo|evo|ivo|erò|irò|erai|irai|iamo|ite|ono)\b",
+        RegexOptions.IgnoreCase);
+
+    // 5. Частые итальянские приставки
+    bool hasItalianPrefixes = Regex.IsMatch(word,
+        @"^(ri|re|pre|dis|sotto|sovra|stra|anti|auto|contro|extra|inter|intra|iper|macro|micro|multi|neo|para|post|proto|semi|super|tele|ultra)",
+        RegexOptions.IgnoreCase);
+
+    // 6. Исключение испанских слов (ción, ll, ñ)
+    bool isSpanishWord = Regex.IsMatch(word, @"(ción|ll|ñ)", RegexOptions.IgnoreCase);
+
+    // 7. Исключение французских слов (eau, aux, tion)
+    bool isFrenchWord = Regex.IsMatch(word, @"(eau|aux|tion|ienne|ille)\b", RegexOptions.IgnoreCase);
+
+    // Исключаем слова, которые явно испанские или французские
+    if (isSpanishWord || isFrenchWord)
+        return false;
+
+    // Итальянское слово, если:
+    return hasItalianDiacritics ||
+           hasItalianCombinations ||
+           hasItalianSuffixes ||
+           isItalianVerb ||
+           hasItalianPrefixes;
+}
+
