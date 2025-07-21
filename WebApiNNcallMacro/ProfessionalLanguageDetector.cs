@@ -339,22 +339,55 @@ private bool IsLikelyFrenchWord(string word)
 
 private bool IsLikelySpanishWord(string word)
 {
-    if (string.IsNullOrWhiteSpace(word) || word.Length < 4)
+    if (string.IsNullOrWhiteSpace(word) return false;
+
+    // Короткие испанские слова (артикли, предлоги, местоимения)
+    if (word.Length <= 3)
+    {
+        return Regex.IsMatch(word,
+            @"^(el|la|los|las|un|una|unos|unas|y|o|a|en|de|que|con|por|sin|al|del|se|lo|mi|tu|su|nos|vos)$",
+            RegexOptions.IgnoreCase);
+    }
+
+    // 1. Проверка на испанскую диакритику (á, é, í, ó, ú, ü, ñ)
+    bool hasSpanishDiacritics = Regex.IsMatch(word, @"[áéíóúüñ]", RegexOptions.IgnoreCase);
+
+    // 2. Характерные испанские сочетания букв
+    bool hasSpanishCombinations = Regex.IsMatch(word,
+        @"(ll|rr|ch|qu|gu|gü|cu|ua|ue|ui|uo|ía|ió)",
+        RegexOptions.IgnoreCase);
+
+    // 3. Типичные испанские суффиксы и окончания
+    bool hasSpanishSuffixes = Regex.IsMatch(word, @"
+        (ción|miento|dad|tad|tud|anza|ario|ero|era|dor|dora|ista|able|ible|ismo|oso|osa|ito|ita|illo|illa)\b",
+        RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
+    // 4. Глагольные окончания (-ar, -er, -ir и их спряжения)
+    bool isSpanishVerb = Regex.IsMatch(word, @"
+        (ar|er|ir|ando|iendo|ado|ido|aba|ía|aré|eré|iré|arás|erás|irás)\b",
+        RegexOptions.IgnoreCase);
+
+    // 5. Частые испанские приставки
+    bool hasSpanishPrefixes = Regex.IsMatch(word,
+        @"^(des|re|pre|trans|super|anti|auto|extra|contra|bi|tri)",
+        RegexOptions.IgnoreCase);
+
+    // 6. Исключение португальских слов (ão, lh, nh, õ)
+    bool isPortugueseWord = Regex.IsMatch(word, @"(ão|lh|nh|õ|ç)", RegexOptions.IgnoreCase);
+
+    // 7. Исключение французских слов (eau, aux, tion)
+    bool isFrenchWord = Regex.IsMatch(word, @"(eau|aux|tion|ienne|ille)\b", RegexOptions.IgnoreCase);
+
+    // Исключаем слова, которые явно португальские или французские
+    if (isPortugueseWord || isFrenchWord)
         return false;
 
-    // Испанские слова обычно:
-    // - оканчиваются на характерные суффиксы
-    // - содержат ударения (á, é, í, ó, ú) или ñ
-    // - не содержат редкие для испанского сочетания букв
-    return Regex.IsMatch(word, @"
-        ^                       # Начало слова
-        (?:[a-záéíóúñ]+         # Основная часть слова
-        (?:ll|rr|qu|gu|gü)      # Характерные сочетания
-        )?                      # Опционально
-        (?:ción|dad|miento|mente|ado|ada|ando|oso|osa)\b # Суффиксы
-        $                       # Конец слова
-        ", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase)
-        && !Regex.IsMatch(word, @"[kwxy]", RegexOptions.IgnoreCase); // Редкие буквы
+    // Испанское слово, если:
+    return hasSpanishDiacritics ||
+           hasSpanishCombinations ||
+           hasSpanishSuffixes ||
+           isSpanishVerb ||
+           hasSpanishPrefixes;
 }
 
 private bool IsLikelyPortugueseWord(string word)
