@@ -46,7 +46,7 @@ namespace WebApiNNcallMacro
         }
 
         private bool IsGibberish(string text)
-        {
+        {уау
             /// 1. Проверка на слишком много разных символов
             var uniqueChars = new HashSet<char>(text).Count;
             if (uniqueChars > text.Length * 0.5) // эмпирическое значение
