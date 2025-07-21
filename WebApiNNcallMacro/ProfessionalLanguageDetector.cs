@@ -486,3 +486,65 @@ private bool IsLikelyItalianWord(string word)
            hasItalianPrefixes;
 }
 
+====================
+private Dictionary<string, Dictionary<string, int>> languageWordFrequencies = new Dictionary<string, Dictionary<string, int>>();
+
+    public void LoadLanguageDictionaries(string directoryPath)
+    {
+        var languageFiles = new Dictionary<string, string>
+        {
+            {"es", "es_50k.txt"},
+            {"fr", "fr_50k.txt"},
+            {"de", "de_50k.txt"},
+            {"pt", "pt_50k.txt"},
+            {"it", "it_50k.txt"},
+            {"ja", "ja_50k.txt"}
+        };
+
+        foreach (var lang in languageFiles)
+        {
+            string filePath = Path.Combine(directoryPath, lang.Value);
+            if (File.Exists(filePath))
+            {
+                var wordFreq = new Dictionary<string, int>();
+                foreach (string line in File.ReadLines(filePath))
+                {
+                    var parts = line.Split(' ');
+                    if (parts.Length >= 2 && int.TryParse(parts[1], out int freq))
+                    {
+                        wordFreq[parts[0].ToLower()] = freq;
+                    }
+                }
+                languageWordFrequencies[lang.Key] = wordFreq;
+            }
+        }
+    }
+    if (string.IsNullOrWhiteSpace(word)) return "unknown";
+    
+    word = word.ToLower();
+    
+    // Сначала проверяем по словарям
+    var langScores = new Dictionary<string, double>();
+    
+    foreach (var lang in languageWordFrequencies)
+    {
+        if (lang.Value.ContainsKey(word))
+        {
+            // Чем выше частота слова, тем больше баллов
+            double score = Math.Log(lang.Value[word] + 1);
+            langScores[lang.Key] = score;
+        }
+    }
+    
+    // Если нашли в словарях
+    if (langScores.Any())
+    {
+        var bestLang = langScores.OrderByDescending(x => x.Value).First();
+        if (bestLang.Value >= Math.Log(1000)) // Порог частоты
+            return bestLang.Key;
+    }
+https://github.com/hermitdave/FrequencyWords
+
+https://github.com/oprogramador/most-common-words-by-language
+
+https://github.com/aceimnorstuvwxz/top-words

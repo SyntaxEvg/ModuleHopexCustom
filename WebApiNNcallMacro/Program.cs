@@ -136,55 +136,9 @@ namespace FrenchWordChecker;
 
 class Program
 {
-    static async Task Main(string[] args)
-    {
-        Console.WriteLine("Введите слово для проверки, французское ли оно:");
-        string? input = Console.ReadLine()?.Trim().ToLower();
+    
 
-        if (string.IsNullOrWhiteSpace(input))
-        {
-            Console.WriteLine("Пустой ввод. Завершение.");
-            return;
-        }
-
-        bool isFrench = IsLikelyFrenchWord(input);
-
-        Console.WriteLine(isFrench
-            ? $"Слово \"{input}\" похоже на французское."
-            : $"Слово \"{input}\" не похоже на французское.");
-
-        await Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Проверяет, похоже ли слово на французское по ряду признаков.
-    /// </summary>
-    static bool IsLikelyFrenchWord(string word)
-    {
-        // Часто встречающиеся французские окончания
-        string[] frenchEndings = [
-            "eau", "ette", "oir", "oire", "age", "ment", "ique", "eur", "ille", "tion"
-        ];
-
-        // Часто встречающиеся французские буквосочетания
-        string[] frenchPatterns = [
-            "ch", "gn", "eau", "oi", "ou", "ill", "é", "à", "è", "ç"
-        ];
-
-        // Проверка по окончаниям
-        if (frenchEndings.Any(ending => word.EndsWith(ending)))
-            return true;
-
-        // Проверка по буквосочетаниям
-        if (frenchPatterns.Any(pattern => word.Contains(pattern)))
-            return true;
-
-        // Проверка по регулярному выражению на французские символы
-        if (Regex.IsMatch(word, "[éèàùâêîôûçëïü]"))
-            return true;
-
-        return false;
-    }
+    
 }
 namespace FrenchWordChecker;
 
