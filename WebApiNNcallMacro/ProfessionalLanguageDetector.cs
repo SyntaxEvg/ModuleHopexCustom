@@ -341,7 +341,7 @@ private bool IsLikelySpanishWord(string word)
 {
     if (string.IsNullOrWhiteSpace(word) return false;
 
-    // Короткие испанские слова (артикли, предлоги, местоимения)
+    // Короткие исацспанские слова (артикли, предлоги, местоимения)
     if (word.Length <= 3)
     {
         return Regex.IsMatch(word,
