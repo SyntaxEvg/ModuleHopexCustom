@@ -302,22 +302,39 @@ private bool IsLikelyFrenchWord(string word)
 .......
     private bool IsLikelyGermanWord(string word)
 {
-    if (string.IsNullOrWhiteSpace(word) || word.Length < 4)
+    if (string.IsNullOrWhiteSpace(word) || word.Length < 3)
         return false;
 
     // Немецкие слова обычно содержат:
-    // - умлауты (ä, ö, ü) и ß
-    // - характерные сочетания (sch, ch, ck, tz и др.)
-    // - суффиксы (ung, heit, keit, chen)
-    return Regex.IsMatch(word, @"
+    // 1. Умлауты (ä, ö, ü) и ß
+    // 2. Характерные сочетания букв (sch, ch, ck, tz, pf, sp, st, ei, ie и др.)
+    // 3. Типичные суффиксы (ung, heit, keit, chen, lein, nis, tion, ik, ig, lich)
+    // 4. Типичные префиксы (ver, ge, be, ent, er, zer)
+    // 5. Частые немецкие буквосочетания в начале/середине слов
+
+    // Проверка на наличие умлаутов или ß
+    if (Regex.IsMatch(word, @"[äöüß]", RegexOptions.IgnoreCase))
+        return true;
+
+    // Проверка характерных немецких сочетаний и морфем
+    var res = Regex.IsMatch(word, @"
         ^                       # Начало слова
-        (?:[a-zäöüß]+           # Основная часть слова
-        (?:sch|ch|ck|tz|pf|sp|st|ei|ie)  # Немецкие сочетания
-        |[äöüß]                 # Или содержит умлауты/эсцет
-        )+                      # Повторяем
-        (?:ung|heit|keit|chen|lein|nis)\b # Суффиксы
+        (?:                     
+        # Префиксы
+        (ver|ge|be|ent|er|zer) 
+        |
+        # Характерные сочетания
+        .*(sch|ch|ck|tz|pf|sp|st|ei|ie|qu|dt|th|ph|ng|nk).* 
+        |
+        # Суффиксы
+        .*(ung|heit|keit|chen|lein|nis|tion|ik|ig|lich|bar|sam|haft|los)\b 
+        |
+        # Частые немецкие окончания
+        .*[^aeiouy](en|er|el)\b 
+        )
         $                       # Конец слова
         ", RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase);
+    return res;
 }
 
 private bool IsLikelySpanishWord(string word)
