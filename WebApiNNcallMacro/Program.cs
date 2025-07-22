@@ -2315,3 +2315,14 @@ class Program2
         WordLists[lang] = wordSet.ToList();
     }
 }
+for (int i = 0; i < input.Length; i++)
+        {
+            char c = input[i];
+            string singleChar = c.ToString();
+            
+            if (!Regex.IsMatch(singleChar, @"^[А-Яа-я]$"))
+            {
+                Console.WriteLine($"Символ '{c}' (позиция {i}) не прошёл проверку!");
+                Console.WriteLine($"Код символа: {(int)c} (0x{(int)c:X})");
+            }
+        }
