@@ -2327,3 +2327,10 @@ for (int i = 0; i < input.Length; i++)
             }
         }
 string cleanText = Regex.Replace(input, @"[^\p{L}\p{M}\p{N}\p{P}\p{S}\s]", "");
+
+bool IsGarbage(string text)
+{
+    int normalChars = text.Count(c => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZéèêëàâùûüÿçîïôœæ".Contains(c));
+    var res = (normalChars * 2 < text.Length); // Если нормальных символов меньше половины — это мусор
+    return res;
+}
