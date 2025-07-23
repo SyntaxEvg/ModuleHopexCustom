@@ -2326,3 +2326,4 @@ for (int i = 0; i < input.Length; i++)
                 Console.WriteLine($"Код символа: {(int)c} (0x{(int)c:X})");
             }
         }
+string cleanText = Regex.Replace(input, @"[^\p{L}\p{M}\p{N}\p{P}\p{S}\s]", "");
