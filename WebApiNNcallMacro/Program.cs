@@ -1669,9 +1669,31 @@ public class Program2
         }
     }
 =============
-bool IsGarbageOptimized(string text)
-{
-    var allowedChars = new HashSet<char>("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZéèêëàâùûüÿçîïôœæÉÈÊËÀÂÙÛÜŸÇÎÏÔŒÆäöüßÄÖÜáéíóúñÁÉÍÓÚÑüÜáéíóúâêîôûãõàçÁÉÍÓÚÂÊÎÔÛÃÕÀÇāīūēōĀĪŪĒŌàèéìíîòóùúÀÈÉÌÍÎÒÓÙÚабвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789 ");
-    int normalCount = text.Count(c => allowedChars.Contains(c));
-    return (normalCount * 2 < text.Length);
-}
+static bool IsGarbage(string text)
+    {
+        // Разрешённые символы (латиница, кириллица, языковые символы, цифры, пробелы)
+        string allowedChars = 
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+            "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
+            "éèêëàâùûüÿçîïôœæÉÈÊËÀÂÙÛÜŸÇÎÏÔŒÆäöüßÄÖÜáéíóúñÁÉÍÓÚÑüÜáéíóúâêîôûãõàçÁÉÍÓÚÂÊÎÔÛÃÕÀÇāīūēōĀĪŪĒŌàèéìíîòóùúÀÈÉÌÍÎÒÓÙÚ" +
+            "0123456789 ";
+
+        // Запрещённые символы:
+        // 1. Управляющие Unicode-символы (U+0000 - U+001F, U+007F - U+009F)
+        // 2. Битые UTF-8 последовательности (например, \u0081, \u0090)
+        // 3. Смешанная латиница + кириллица в одном слове (например, "Рu0090")
+        bool hasForbiddenUnicode = text.Any(c => 
+            (c >= '\u0000' && c <= '\u001F') ||  // Управляющие символы
+            (c >= '\u007F' && c <= '\u009F') ||  // Доп. управляющие символы
+            (c >= '\uFF00' && c <= '\uFFFF'));   // Спецсимволы из "Fullwidth" диапазона
+
+        bool hasMixedScripts = Regex.IsMatch(text, @"\p{IsCyrillic}.*[a-zA-Z]|[a-zA-Z].*\p{IsCyrillic}");
+
+        // Если есть запрещённые символы или смешение алфавитов — сразу мусор
+        if (hasForbiddenUnicode || hasMixedScripts)
+            return true;
+
+        // Проверяем долю "нормальных" символов
+        int normalCount = text.Count(c => allowedChars.Contains(c));
+        return (normalCount * 2 < text.Length);
+    }
