@@ -1697,3 +1697,95 @@ static bool IsGarbage(string text)
         int normalCount = text.Count(c => allowedChars.Contains(c));
         return (normalCount * 2 < text.Length);
     }
+    //==============
+    using System;
+using System.Text;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        string corruptedText = "РџСЂРёРІРµС‚"; // Пример искажённого текста (замени на свой)
+        byte[] originalBytes = Encoding.UTF8.GetBytes(corruptedText); // Или другой исходной кодировки
+
+        string[] encodings = new[]
+        {
+            "WINDOWS-1251", "KOI8-R", "KOI8-U", "ISO-8859-5", "CP855", "CP866", "GB2312", "UTF-16",
+            "SJIS", "ISO-2022-JP", "CP437", "CP850", "CP852", "ISO-8859-1", "ISO-8859-2", "ISO-8859-3",
+            "ISO-8859-4", "ISO-8859-6", "ISO-8859-7", "ISO-8859-8", "ISO-8859-9", "ISO-8859-13",
+            "ISO-8859-15", "WINDOWS-1250", "WINDOWS-1252", "WINDOWS-1253", "WINDOWS-1254", "WINDOWS-1255",
+            "WINDOWS-1256", "WINDOWS-1257", "WINDOWS-1258"
+        };
+
+        bool found = false;
+
+        // Перебор 1-го поколения
+        foreach (var enc1 in encodings)
+        {
+            try
+            {
+                string decoded = Encoding.GetEncoding(enc1).GetString(originalBytes);
+                if (ContainsCyrillic(decoded))
+                {
+                    Console.WriteLine($"1 поколение: {enc1} -> {decoded}");
+                    found = true;
+                    break;
+                }
+            }
+            catch { }
+
+            if (found) break;
+
+            // Перебор 2-го поколения
+            foreach (var enc2 in encodings.Where(e => e != enc1))
+            {
+                try
+                {
+                    byte[] bytes2 = Encoding.GetEncoding(enc1).GetBytes(corruptedText);
+                    string decoded2 = Encoding.GetEncoding(enc2).GetString(bytes2);
+                    if (ContainsCyrillic(decoded2))
+                    {
+                        Console.WriteLine($"2 поколения: {enc1} -> {enc2} -> {decoded2}");
+                        found = true;
+                        break;
+                    }
+                }
+                catch { }
+            }
+
+            if (found) break;
+
+            // Перебор 3-го поколения
+            foreach (var enc2 in encodings.Where(e => e != enc1))
+            {
+                foreach (var enc3 in encodings.Where(e => e != enc1 && e != enc2))
+                {
+                    try
+                    {
+                        byte[] bytes2 = Encoding.GetEncoding(enc1).GetBytes(corruptedText);
+                        byte[] bytes3 = Encoding.GetEncoding(enc2).GetBytes(Encoding.GetEncoding(enc2).GetString(bytes2));
+                        string decoded3 = Encoding.GetEncoding(enc3).GetString(bytes3);
+                        if (ContainsCyrillic(decoded3))
+                        {
+                            Console.WriteLine($"3 поколения: {enc1} -> {enc2} -> {enc3} -> {decoded3}");
+                            found = true;
+                            break;
+                        }
+                    }
+                    catch { }
+                }
+                if (found) break;
+            }
+            if (found) break;
+        }
+
+        if (!found)
+            Console.WriteLine("Кириллица не найдена ни в одной комбинации.");
+    }
+
+    static bool ContainsCyrillic(string text)
+    {
+        return text.Any(c => c >= 'А' && c <= 'я');
+    }
+}
