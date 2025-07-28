@@ -1789,3 +1789,33 @@ class Program
         return text.Any(c => c >= 'А' && c <= 'я');
     }
 }
+string input = "abcdefg"; // Пример строки для разбивки
+        List<string> pairs = new List<string>();
+
+        // Проверка на null или пустую строку
+        if (string.IsNullOrEmpty(input))
+        {
+            Console.WriteLine("Строка пуста или null.");
+            return;
+        }
+
+        int i = 0;
+        for (; i < input.Length - 1; i += 2)
+        {
+            string pair = input.Substring(i, 2);
+            pairs.Add(pair);
+        }
+
+        // Проверка на нечётную длину и обработка последнего символа
+        if (input.Length % 2 != 0)
+        {
+            string lastChar = input.Substring(input.Length - 1, 1);
+            Console.WriteLine("Последний одиночный символ: " + lastChar);
+        }
+
+        // Вывод пар
+        Console.WriteLine("Пары символов:");
+        foreach (string pair in pairs)
+        {
+            Console.WriteLine(pair);
+        }
